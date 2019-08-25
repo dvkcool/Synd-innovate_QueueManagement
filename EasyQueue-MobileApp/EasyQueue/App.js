@@ -9,68 +9,8 @@ import {
 } from 'react-native';
 import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
 
-class SignInScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Please sign in',
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Button title="Sign in!" onPress={this._signInAsync} />
-      </View>
-    );
-  }
-
-  _signInAsync = async () => {
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('QWait');
-  };
-}
-
-class HomeScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Welcome to the app!',
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Button title="Show me more of the app" onPress={this._showMoreApp} />
-        <Button title="Actually, sign me out :)" onPress={this._signOutAsync} />
-      </View>
-    );
-  }
-
-  _showMoreApp = () => {
-    this.props.navigation.navigate('Other');
-  };
-
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('QRegister');
-  };
-}
-
-class OtherScreen extends React.Component {
-  static navigationOptions = {
-    title: 'Lots of features here',
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-        <Button title="I'm done, sign me out" onPress={this._signOutAsync} />
-        <StatusBar barStyle="default" />
-      </View>
-    );
-  }
-
-  _signOutAsync = async () => {
-    await AsyncStorage.clear();
-    this.props.navigation.navigate('QRegister');
-  };
-}
+import RegStack from './modules/QueueRegister/QReg';
+import WaitStack from './modules/QueueWait/QWait';
 
 class QCheck extends React.Component {
   constructor() {
@@ -105,13 +45,11 @@ const styles = StyleSheet.create({
   },
 });
 
-const AppStack = createStackNavigator({ Home: HomeScreen, Other: OtherScreen });
-const RegStack = createStackNavigator({ SignIn: SignInScreen });
 
 export default createAppContainer(createSwitchNavigator(
   {
     QCheck: QCheck,
-    QWait: AppStack,
+    QWait: WaitStack,
     QRegister: RegStack,
   },
   {
