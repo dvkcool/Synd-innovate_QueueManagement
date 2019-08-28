@@ -34,5 +34,6 @@ Happy Coding
 _______________________________
 Divyanshu Kumar
 _______________________________
-[https://dvkcool.github.io]:https://dvkcool.github.io
+https://dvkcool.github.io
+<br>
 Team Infinite_Debug
