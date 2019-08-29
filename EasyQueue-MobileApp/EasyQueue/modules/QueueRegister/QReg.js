@@ -6,6 +6,7 @@ import {
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
+import Department from  './Department';
 const {width, height} = Dimensions.get('window');
 
 class SignInScreen extends React.Component {
@@ -43,8 +44,8 @@ class SignInScreen extends React.Component {
   }
 
   _signInAsync = async () => {
-    await AsyncStorage.setItem('userToken', 'abc');
-    this.props.navigation.navigate('QWait');
+    //await AsyncStorage.setItem('userToken', 'abc');
+    this.props.navigation.navigate('Dept');
   };
 }
 
@@ -64,4 +65,4 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
 });
-export default createStackNavigator({ SignIn: SignInScreen });
+export default createStackNavigator({ SignIn: SignInScreen, Dept: Department });
