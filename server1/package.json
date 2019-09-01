@@ -1,0 +1,22 @@
+{
+  "name": "server1",
+  "version": "1.0.0",
+  "description": "Brnach Server 1",
+  "author": "Divyanshu Kumar - dvkcool",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.2",
+    "fetch": "^1.1.0",
+    "ip": "^1.1.5",
+    "mysql": "^2.16.0",
+    "request": "^2.83.0",
+    "request-debug": "^0.2.0"
+  }
+}
