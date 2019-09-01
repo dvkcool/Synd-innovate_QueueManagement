@@ -1,17 +1,15 @@
 import React, {Component} from 'react';
 import {
   ActivityIndicator, AsyncStorage, TouchableOpacity, StatusBar, StyleSheet, View, Image,
-  Dimensions, Text, FlatList, TouchableHighlight, TextInput
+  Dimensions, Text, FlatList, TouchableHighlight, TextInput, Button, ImageBackground
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
 const {width, height} = Dimensions.get('window');
-import ListRow from './ListRow';
 export default class Department extends Component {
   static navigationOptions = {
     title: 'Select Service : EasyQueue',
   };
-  constructor(props) {
+  constructor(props){
     super(props);
     this.arrayholder = ['Cash Deposit', 'Cash Withdrawl', 'Account to Account Transfer', 'Cheque Deposit',
                         'Demand draft issue', 'Government Challan', 'Saving Account', 'Current Account',
@@ -24,7 +22,6 @@ export default class Department extends Component {
       error: null,
     };
   }
-
   renderSeparator = () => {
     return (
       <View
@@ -54,8 +51,10 @@ export default class Department extends Component {
   };
 
   render(){
+    const { navigation } = this.props;
     return(
-      <View style={{flex: 1, flexDirection: 'column'}}>
+      <ImageBackground source={require('../../res/syndicate.png')} style={{flex: 1, flexDirection: 'column',
+        width: '100%', height: '100%', resizeMode: 'contain',}} imageStyle= {{opacity:0.7}}>
         <View style={{flex: 0.1, flexDirection: 'row', alignItems:'center', justifyContent:'center'}}>
           <View style={{flex:0.1, alignItems:'center', justifyContent:'center'}}>
             <Ionicons name="ios-search" size={30} color="black" />
@@ -72,16 +71,24 @@ export default class Department extends Component {
         <FlatList
          data={this.state.data}
          renderItem={({ item, index }) => (
-               <View style={styles.card}>
-                 <Text>{item}</Text>
-               </View>
+           <View>
+             <TouchableOpacity style={styles.card} onPress={() => {
+                 console.log("Hi "+item);
+                 navigation.navigate('ScanReg', {
+                   item: item
+                 });
+               }}>
+               <Text>{item}</Text>
+             </TouchableOpacity>
+           </View>
+
 
          )}
          style={{ marginTop: 10, flex: 0.9}}
          keyExtractor={(item, index) => index.toString()}
          ListHeaderComponent={this.renderHeader}
        />
-      </View>
+      </ImageBackground>
     );
   }
 }

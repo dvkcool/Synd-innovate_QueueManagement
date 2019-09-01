@@ -7,6 +7,7 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
 import Department from  './Department';
+import ScanReg from './ScanReg';
 const {width, height} = Dimensions.get('window');
 
 class SignInScreen extends React.Component {
@@ -65,4 +66,4 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
 });
-export default createStackNavigator({ SignIn: SignInScreen, Dept: Department });
+export default createStackNavigator({ SignIn: SignInScreen, Dept: Department, ScanReg: ScanReg });
