@@ -8,6 +8,7 @@ var mysql = require('mysql');
 var ip = require("ip");
 //var config = require("./config.json");
 var ip = require("ip");
+var branch = require("./branch.json");
 const FileSystem = require("fs");
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({
@@ -23,7 +24,14 @@ const FileSystem = require("fs");
   });
   //for getting ipaddress
   app.get('/ipaddr',(req,res)=>{
-    res.send(ip.address());
+    console.log("called me");
+    var hi = {
+      ip: ip.address()
+    }
+    console.log(hi);
+    hi = JSON.stringify(hi);
+    console.log(hi);
+    res.send(hi);
   })
 
   // Static HTML server
@@ -40,13 +48,9 @@ const FileSystem = require("fs");
     res.send(done);
   });
 
-  // Endoint to get ip address
-  app.get('/getip',(req,res)=>{
-   res.send(req.connection.remoteAddress);
-  });
 
 
   // Starting the server on 8083 port
-  app.listen(8083, function () {
-    console.log('App listening on port 8083!');
+  app.listen(branch.port, function () {
+    console.log('App listening on port ' + branch.port +'!');
   });

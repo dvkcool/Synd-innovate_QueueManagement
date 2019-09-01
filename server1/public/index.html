@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <title>Welcome</title>
+    <script type="text/javascript" src="branch.json"></script>
+    <script type="text/javascript">
+      function GetQR(){
+        var url = "http://localhost:"+ branch.port+"/ipaddr";
+        console.log(url);
+        fetch(url, {
+            method : "GET",
+        })
+        .then(val =>{return val.json()})
+        .then(val => {
+          console.log(val.ip);
+          var t = val.ip;
+          t = t + ":"+branch.port;
+          var url = "https://api.qrserver.com/v1/create-qr-code/?data="+t+"&amp;size=100x100";
+          var img = document.getElementById('barcode');
+          img.src = url;
+        })
+        .catch(err => {console.log(err)})
+      }
+    </script>
+  </head>
+  <body onload="javascript:GetQR()">
+    <h1>Welcome to Syndicate Bank Raipur branch.</h1>
+    <img id='barcode'
+           src="/res/Barcode.jpg"
+           alt=""
+           title="HELLO"
+           width="120"
+           height="120"
+           border= 2 />
+  </body>
+</html>
