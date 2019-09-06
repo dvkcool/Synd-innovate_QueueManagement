@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ActivityIndicator, Button,
-  StatusBar, StyleSheet, View, Text
+  StatusBar, StyleSheet, View, Text, Alert
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Pie from 'react-native-pie';
@@ -11,14 +11,14 @@ import english from '../../strings/english';
 import Tim from './Tim';
 class HomeScreen extends React.Component {
   static navigationOptions = {
-    title: 'Welcome to the app!',
+    title: 'Welcome to EasyQueue',
   };
 
   render() {
     return (
       <View style={styles.container}>
         <Button title="Show me more of the app" onPress={this._showMoreApp} />
-        <Button title="Actually, sign me out :)" onPress={this._signOutAsync} />
+        <Button title="Cancel My Ticket" onPress={this.cancelTicket} />
           <View>
             <Pie
               radius={50}
@@ -39,9 +39,41 @@ class HomeScreen extends React.Component {
     this.props.navigation.navigate('Other');
   };
 
-  _signOutAsync = async () => {
+  cancelConfirm = async () =>{
+    var url = await AsyncStorage.getItem('url');
+    var token = await AsyncStorage.getItem('token');
+    var dept = await AsyncStorage.getItem('dept');
+    url = url +'/cancelTicket';
+    console.log(url);
+    fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        token: token,
+        dept: dept
+      })
+    })
+    .then((res) => {
+      console.log(res);
+    })
+    .catch((error) => {
+      Alert.alert("Please contact the help desk.")
+      console.error(error);
+    });
     await AsyncStorage.clear();
     this.props.navigation.navigate('QRegister');
+  }
+  cancelTicket = async () => {
+    Alert.alert(
+      'Confirm Cancel',
+      'Are you sure you want to cancel your token',
+      [
+        {text: 'NO', onPress: () =>  console.log("cancel cancel hahaha"),style: 'cancel'},
+        {text: 'YES', onPress: () => this.cancelConfirm()},
+      ]
+    );
   };
 }
 var str = english;

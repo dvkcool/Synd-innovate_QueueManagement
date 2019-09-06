@@ -153,7 +153,8 @@ var cron = require('node-cron');
                     if(!er){
                       var m = {
                         token: x,
-                        wait_time: e
+                        wait_time: e,
+                        dept: t
                       }
                     }
                     else{
@@ -184,6 +185,25 @@ var cron = require('node-cron');
       senderror(res);
     }
   });
+
+
+  // Cancel a token
+  app.post('/cancelTicket', (req, res)=>{
+    try {
+      pool.query('delete from ?? where ticketId like  ?', [req.body.dept, req.body.token], (err, r, f)=>{
+        if(err){
+          console.log(err);
+          senderror(res);
+        }
+        else{
+          res.send("done");
+        }
+      })
+    } catch (e) {
+      console.log(e);
+    }
+  });
+
 
   // Starting the server on 8083 port
   app.listen(branch.port, function () {

@@ -42,7 +42,10 @@ class ScanActivity extends Component<Props>{
       this.setState({
         waiting: 1
       });
-      t = 'http://' + t +'/regQueue';
+      t ='http://' + t;
+      AsyncStorage.setItem('url', t);
+      t =  t +'/regQueue';
+
       console.log(t);
       var dept= this.props.detail;
       fetch(t, {
@@ -56,7 +59,8 @@ class ScanActivity extends Component<Props>{
       }).then((res) => res.json())
       .then((res) => {
         console.log(res);
-        AsyncStorage.setItem('dept', dept).then(()=>{
+        AsyncStorage.setItem('dept', res.dept);
+        AsyncStorage.setItem('service', dept).then(()=>{
           var wt = ''+ res.wait_time;
           AsyncStorage.setItem('wait_time', wt).then(()=>{
             AsyncStorage.setItem('token', res.token).then(()=>{
