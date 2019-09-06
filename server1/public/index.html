@@ -2,7 +2,10 @@
   <head>
     <title>Welcome</title>
     <script type="text/javascript" src="branch.json"></script>
+    <script type="text/javascript" src="qrcode.js"></script>
     <script type="text/javascript">
+
+    makeCode();
       function GetQR(){
         var url = "http://localhost:"+ branch.port+"/ipaddr";
         console.log(url);
@@ -14,9 +17,12 @@
           console.log(val.ip);
           var t = val.ip;
           t = "dvkcool|"+t + ":"+branch.port;
+          var qrcode = new QRCode(document.getElementById("qrcode"), t);
+          /*
           var url = "https://api.qrserver.com/v1/create-qr-code/?data="+t+"&amp;size=300x300";
           var img = document.getElementById('barcode');
           img.src = url;
+          */
         })
         .catch(err => {console.log(err)})
       }
@@ -24,12 +30,8 @@
   </head>
   <body onload="javascript:GetQR()">
     <center><h1>Welcome to Syndicate Bank Raipur branch.</h1></center>
-    <center><img id='barcode'
-           src="/res/Barcode.jpg"
-           alt=""
-           title="HELLO"
-           width="300"
-           height="300"
-           border= 2 /></center>
+    <center>
+      <div id="qrcode" style="width:300, height:300, border:2 "></div>
+    </center>
   </body>
 </html>

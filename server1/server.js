@@ -107,6 +107,7 @@ var cron = require('node-cron');
 
   // Endpoint to register to queue with a specific service
   app.post('/regQueue', (req, res) =>{
+    console.log("Reg queue called");
     try {
       pool.query('Select departmentId from serviceDepartment where service like ?', req.body.service, (err, rows,fields)=>{
         if(!err){
@@ -147,6 +148,7 @@ var cron = require('node-cron');
                 if(!e){
                   var te = rw[0].people;
                   var e = te*3/c;
+                  e.toFixed(0);
                   pool.query("Insert into ?? values(?, now())", [t, x], (er, row, fiel)=>{
                     if(!er){
                       var m = {
