@@ -1,14 +1,13 @@
 import React from 'react';
 import {
   ActivityIndicator,
-  AsyncStorage,
   Button,
   StatusBar,
   StyleSheet,
   View,
 } from 'react-native';
 import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import RegStack from './modules/QueueRegister/QReg';
 import WaitStack from './modules/QueueWait/QWait';
 

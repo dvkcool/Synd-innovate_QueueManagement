@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-  ActivityIndicator, AsyncStorage, Button,
+  ActivityIndicator, Button,
   StatusBar, StyleSheet, View, Text
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import Pie from 'react-native-pie';
 import { createStackNavigator, createSwitchNavigator, createAppContainer } from 'react-navigation';
 import hindi from '../../strings/hindi';
