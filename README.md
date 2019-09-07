@@ -18,17 +18,20 @@ Since the server will be distributed, it will be easy to add another system, and
 The source code can be found in `EasyQueue-MobileApp\EasyQueue`.
 #### Screenshots:
 1. Welcome Screen:
-![Welcome Screen](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Main_page.png)
+<img src="https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Main_page.png" width="300"/>
 2. Select a service to register in queue:
-![Service](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Service_select.png)
+<img src="https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Service_select.png" width="300"/>
 3. Scan QR code:
-![Scan](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/QR_code_scan.png)
+<img src="https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/QR_code_scan.png" width="300"/>
 4. If invalid QR code:
-![InvalidQR](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/InvalidQR.png)
+<img src="https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/InvalidQR.png" width="300"/>
 5. Waiting Screen:
-![Waiting](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Waiting_Screen.png)
+<img src="https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Waiting_Screen.png" width="300"/>
 6. Cancelling Ticket:
-![Waiting](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Cancel_Ticket.png)
+<img src="https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Cancel_Ticket.png" width="300"/>
+
+
+
 ### Branch Server(s)
 The code can be found in `server1`, `server2`: The source code is same just different instances to demonstrate two different branches.
 
