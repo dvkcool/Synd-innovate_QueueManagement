@@ -16,6 +16,22 @@ Since the server will be distributed, it will be easy to add another system, and
 
 ### Mobile Applications
 The source code can be found in `EasyQueue-MobileApp\EasyQueue`.
+
+#### Building the app yourself:
+1. Building app
+```sh
+$ git clone https://github.com/dvkcool/Synd-innovate_QueueManagement
+$ cd Synd-innovate_QueueManagement/EasyQueue-MobileApp/EasyQueue
+$ npm install
+$ react-native run-android
+```
+2. Running local server.
+```sh
+$ cd Synd-innovate_QueueManagement/server1
+$ npm install
+$ node server.js
+```
+
 #### Screenshots:
 1. Welcome Screen:
 <img src="https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Main_page.png" width="300"/>
