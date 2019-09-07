@@ -16,15 +16,22 @@ Since the server will be distributed, it will be easy to add another system, and
 
 ### Mobile Applications
 The source code can be found in `EasyQueue-MobileApp\EasyQueue`.
-More coming soon.
-
+#### Screenshots:
+1. Welcome Screen:
+![Welcome Screen](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Main_page.png)
+2. Select a service to register in queue:
+![Service](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Service_select.png)
+3. Scan QR code:
+![Scan](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/QR_code_scan.png)
+4. If invalid QR code:
+![InvalidQR](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/InvalidQR.png)
+5. Waiting Screen:
+![Waiting](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Waiting_Screen.png)
+6. Cancelling Ticket:
+![Waiting](https://raw.githubusercontent.com/dvkcool/Synd-innovate_QueueManagement/master/screenshots/Cancel_Ticket.png)
 ### Branch Server(s)
-The code can be found in `Branch_1`, `Branch_2`: The source code is same just different instances to demonstrate two different branches.
-More coming soon.
+The code can be found in `server1`, `server2`: The source code is same just different instances to demonstrate two different branches.
 
-### Central Monitoring system
-The code can be found in `Central_Monitor`.
-More coming soon.
 
 ## Found a bug?
 This is still a work in progress, please wait to let it complete.
