@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ActivityIndicator, AsyncStorage, TouchableOpacity, StatusBar, StyleSheet, View, Image,
-  Dimensions, Text
+  Dimensions, Text, ImageBackground
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -17,6 +17,8 @@ class SignInScreen extends React.Component {
 
   render() {
     return (
+      <ImageBackground source={require('../../res/bg.png')} style={{flex: 1, flexDirection: 'column',
+        width: '100%', height: '100%', resizeMode: 'contain',}}>
       <View style={styles.container}>
         <Image
           style={{width:width*0.8, height: height*0.2, marginLeft: width*0.1, marginTop: height*0.2}}
@@ -41,6 +43,7 @@ class SignInScreen extends React.Component {
           <Text style= {{color:'#fff'}}> Submit Feedback</Text>
         </TouchableOpacity>
       </View>
+    </ImageBackground>
     );
   }
 
