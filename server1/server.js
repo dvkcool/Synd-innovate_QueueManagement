@@ -216,12 +216,6 @@ var cron = require('node-cron');
       console.log(e);
     }
   });
-
-  // Starting the server on 8083 port
-  app.listen(branch.port, function () {
-    console.log('App listening on port ' + branch.port +'!');
-  });
-
   //Endpoint to get a new customer to a counter
   app.post('/nextCustomer',(req,res)=>{
     try{
@@ -273,4 +267,9 @@ var cron = require('node-cron');
     }catch(e){
       console.log(e);
     }
+  });
+  
+  // Starting the server on 8083 port
+  app.listen(branch.port, function () {
+    console.log('App listening on port ' + branch.port +'!');
   });
