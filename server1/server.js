@@ -75,17 +75,6 @@ var cron = require('node-cron');
     updateTok('A', 0);
   });
 
-  //  An endpoint to test from mobile application
-  app.get('/testdb', (req, res) =>{
-    pool.query('SELECT * FROM test', (err,rows,fields)=>{
-      if(!err){
-         res.send(rows);
-      }
-      else {
-        console.log(err);
-      }
-    })
-  });
 
   // Getting first and second for Token
 
