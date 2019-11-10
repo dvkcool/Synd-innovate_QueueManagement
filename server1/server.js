@@ -16,7 +16,7 @@ var cron = require('node-cron');
   // A function to send failed message back to client
   function senderror(res){
     var m = {
-      error: "Please get to help desk"
+      error: "Please get to help desk from function"
     }
     m = JSON.stringify(m);
     res.send(m);
@@ -96,7 +96,7 @@ var cron = require('node-cron');
 
   // Endpoint to register to queue with a specific service
   app.post('/regQueue', (req, res) =>{
-    console.log("Reg queue called");
+    console.log("req", req.body.service);
     try {
       pool.query('Select departmentId from serviceDepartment where service like ?', req.body.service, (err, rows,fields)=>{
         if(!err){
@@ -105,11 +105,11 @@ var cron = require('node-cron');
             t = rows[0].departmentId;
           }
           else{
-            t = 'CASHD';
+            t = 'CASHW';
           }
 
           if(!t){
-            t = 'CASHD';
+            t = 'CASHW';
           }
           if(second===999){
             first++;
@@ -118,6 +118,7 @@ var cron = require('node-cron');
           else{
             second++;
           }
+          console.log("dept ", t);
           updateTok(String.fromCharCode(first), second);
           pool.query('Select counterCount from DepartmentInfo where departmentId like ?', t, (et, ans, fd)=>{
             if(!et){
@@ -133,7 +134,9 @@ var cron = require('node-cron');
                 c = 1;
               }
               var x = String.fromCharCode(first) + ''+second;
-              pool.query('select count(ticketId) as \'people\' from ??', t, (e, rw, fe)=>{
+              console.log("token: ", x);
+              pool.query('select count(tokenId) as \'people\' from ??', t, (e, rw, fe)=>{
+
                 if(!e){
                   var te = rw[0].people;
                   var e = te*3/c;
@@ -157,11 +160,13 @@ var cron = require('node-cron');
                   })
                 }
                 else{
+                  console.log(e);
                   senderror(res);
                 }
               })
             }
             else{
+              console.log("departmentInfo error");
               senderror(res);
             }
           })
@@ -208,6 +213,7 @@ var cron = require('node-cron');
           senderror(res);
         }else{
           var dept = r[0].departmentId;
+          console.log(dept);
           //check if token exist , if yes delete it
           pool.query('select tokenId from presentStatus where counter like ? and departmentId like ?',[req.body.counter, dept], (err,r,f)=>{
             if(err){
@@ -220,12 +226,19 @@ var cron = require('node-cron');
                   console.log("token deleted");
                 })
               }
-              pool.query('select tokeId from ?',dept, (err,r,f)=>{
-                if(r.length() == 0){
-                  senderror("no customers in queue");
+              pool.query('select tokenId from ??',dept, (err,r,f)=>{
+                if(err){
+                  senderror(res);
+                }
+                console.log(r);
+                if(r.length <= 0){
+                  res.send("no customers in queue");
                 }else{
                   var custtk = r[0].tokenId;
                   pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[custtk, req.body.counter, dept], (err,r,f)=>{
+                  pool.query('delete from ?? where tokenId = ?', [dept, custtk], (err,r,f)=>{
+
+                  })
                     if(err){
                       console.log(err);
                       senderror(err);
@@ -239,5 +252,7 @@ var cron = require('node-cron');
           })
         }
       })
+    }catch(e){
+      console.log(e);
     }
-  })
+  });
