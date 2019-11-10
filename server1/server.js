@@ -73,7 +73,18 @@ var cron = require('node-cron');
   // Initialize token everyday to zero
   cron.schedule('* 10 8 * 1-5', () => {
     updateTok('A', 0);
+    updatePresentStatus()
   });
+
+  // making all presentStatus tokenId to null
+  updatePresentStatus(){
+      pool.query('update presentStatus set tokenId = ?',[null],(err,r,f)=>{
+        if(err){
+          console.log(err);
+        }
+      })
+  }
+
 
 
   // Getting first and second for Token
