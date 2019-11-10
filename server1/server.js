@@ -88,7 +88,6 @@ var cron = require('node-cron');
   });
 
   // Getting first and second for Token
-
   var first = "A".charCodeAt(0);
   var second = 0;
   try {
@@ -190,7 +189,7 @@ var cron = require('node-cron');
   // Cancel a token
   app.post('/cancelTicket', (req, res)=>{
     try {
-      pool.query('delete from ?? where ticketId like  ?', [req.body.dept, req.body.token], (err, r, f)=>{
+      pool.query('delete from ?? where ticketId like  ?', [req.body.dept, req.body.token], (err, result, fields)=>{
         if(err){
           console.log(err);
           senderror(res);
@@ -204,6 +203,25 @@ var cron = require('node-cron');
     }
   });
 
+  // Get next token for a counter
+  app.post('/getNext', (req, res)=>{
+    try {
+      pool.query('select departmentId from counterDept where counterId =  ?', [req.body.counterId], (err, r, f)=>{
+        if(err){
+          console.log(err);
+          senderror(res);
+        }
+        else{
+          var t = result[0].departmentId;
+          // get the next token from this departmentId:
+
+        }
+      })
+    }
+    catch (e) {
+      console.log(e);
+    }
+  });
 
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
