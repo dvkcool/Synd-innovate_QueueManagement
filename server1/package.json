@@ -4,6 +4,10 @@
   "description": "Brnach Server 1",
   "author": "Divyanshu Kumar - dvkcool",
   "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
