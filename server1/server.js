@@ -76,14 +76,16 @@ var cron = require('node-cron');
     updatePresentStatus()
   });
 
+
   // making all presentStatus tokenId to null
-  updatePresentStatus(){
+ function updatePresentStatus(){
       pool.query('update presentStatus set tokenId = ?',[null],(err,r,f)=>{
         if(err){
           console.log(err);
         }
       })
   }
+
 
 
 
@@ -234,10 +236,11 @@ var cron = require('node-cron');
               var tId = r[0].tokenId;
               if(tId != null){
                 pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[null, req.body.counter, dept], (err,r,f)=>{
+
                   console.log("token deleted");
                 })
               }
-              pool.query('select tokenId from ??',dept, (err,r,f)=>{
+              pool.query('select tokenId,arrivalTime from ??',dept, (err,r,f)=>{
                 if(err){
                   senderror(res);
                 }
@@ -246,6 +249,8 @@ var cron = require('node-cron');
                   res.send("no customers in queue");
                 }else{
                   var custtk = r[0].tokenId;
+                  var arrTime = r[0].arrivalTime;
+                  addCustomer(dept, custtk, arrTime);
                   pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[custtk, req.body.counter, dept], (err,r,f)=>{
                   pool.query('delete from ?? where tokenId = ?', [dept, custtk], (err,r,f)=>{
 
@@ -267,3 +272,27 @@ var cron = require('node-cron');
       console.log(e);
     }
   });
+
+  //function to get daily statistics from customers
+  function addCustomer(dept, tkId, arrTime){
+
+    var dur;
+    pool.query('select TIMEDIFF(CURRENT_TIME(),?) as dur',arrTime,(err,r,f)=>{
+
+      if(err){
+        console.log(err);
+      }else{
+        dur = r[0].dur;
+
+        pool.query('INSERT INTO dailyBranchStatistics(tokenId, departmentId, waitingTime) VALUES(? ,?, ?)',[tkId, dept, dur], (err,r,f)=>{
+          if(err){
+            console.log(err);
+          }else{
+            console.log("value set successfully");
+          }
+        })
+      }
+    })
+
+
+  }
