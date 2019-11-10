@@ -4,11 +4,26 @@
     <script type="text/javascript" src="../branch.json"></script>
     <script type="text/javascript">
       console.log(branch.branch_name);
+      var counterId = 1;
+      function getNext(){
+        /*
+        get next Person fetch
+        */
+        var n = "A10";
+        document.getElementById("token").innerHTML = n;
+      }
     </script>
   </head>
   <body>
-    <center><h1>Welcome to Syndicate Bank Raipur branch.</h1></center>
     <center>
+      <h1>Welcome to Syndicate Bank Raipur branch.</h1><br>
+      <font size="5">
+      <B>Counter ID: </B> 1 <br>
+      <hr>
+      <B> Token Id: </B> <div id ="token"> tokenid-a1</div>
+      <hr>
+      <button type="button" onclick="getNext()"><font size="4">Next Person</font></button>
+      </font>
     </center>
   </body>
 </html>
