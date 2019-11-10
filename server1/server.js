@@ -198,3 +198,46 @@ var cron = require('node-cron');
   app.listen(branch.port, function () {
     console.log('App listening on port ' + branch.port +'!');
   });
+
+  //Endpoint to get a new customer to a counter
+  app.post('/nextCustomer',(req,res)=>{
+    try{
+      pool.query('select departmentId from counterDepartment where counter like ?',req.body.counter, (err,r,f)=>{
+        if(err){
+          console.log(err);
+          senderror(res);
+        }else{
+          var dept = r[0].departmentId;
+          //check if token exist , if yes delete it
+          pool.query('select tokenId from presentStatus where counter like ? and departmentId like ?',[req.body.counter, dept], (err,r,f)=>{
+            if(err){
+              console.log(err);
+              senderror(err);
+            }else{
+              var tId = r[0].tokenId;
+              if(tId != null){
+                pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[null, req.body.counter, dept], (err,r,f)=>{
+                  console.log("token deleted");
+                })
+              }
+              pool.query('select tokeId from ?',dept, (err,r,f)=>{
+                if(r.length() == 0){
+                  senderror("no customers in queue");
+                }else{
+                  var custtk = r[0].tokenId;
+                  pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[custtk, req.body.counter, dept], (err,r,f)=>{
+                    if(err){
+                      console.log(err);
+                      senderror(err);
+                    }else{
+                      res.send(custtk);
+                    }
+                  })
+                }
+              })
+            }
+          })
+        }
+      })
+    }
+  })
