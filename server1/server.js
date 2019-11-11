@@ -244,7 +244,11 @@ var cron = require('node-cron');
                 }
                 console.log(r);
                 if(r.length <= 0){
-                  res.send("no customers in queue");
+                  var m = {
+                    tok: 'No customers in queue'
+                  };
+                  m = JSON.stringify(m);
+                  res.send(m);
                 }else{
                   var custtk = r[0].tokenId;
                   pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[custtk, req.body.counter, dept], (err,r,f)=>{
