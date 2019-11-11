@@ -255,7 +255,11 @@ var cron = require('node-cron');
                       console.log(err);
                       senderror(err);
                     }else{
-                      res.send(custtk);
+                      var m = {
+                        tok: custtk
+                      };
+                      m = JSON.stringify(m);
+                      res.send(m);
                     }
                   })
                 }
@@ -268,7 +272,7 @@ var cron = require('node-cron');
       console.log(e);
     }
   });
-  
+
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
     console.log('App listening on port ' + branch.port +'!');

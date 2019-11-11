@@ -9,6 +9,26 @@
         /*
         get next Person fetch
         */
+        var url = "http://localhost:"+ branch.port+"/nextCustomer";
+        fetch(url, {
+            method : "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              counter: 1
+            })
+        })
+        .then(val =>{return val.json()})
+        .then(val => {
+          console.log(val);
+          /*
+          var url = "https://api.qrserver.com/v1/create-qr-code/?data="+t+"&amp;size=300x300";
+          var img = document.getElementById('barcode');
+          img.src = url;
+          */
+        })
+        .catch(err => {console.log(err)})
         var n = "A10";
         document.getElementById("token").innerHTML = n;
       }
