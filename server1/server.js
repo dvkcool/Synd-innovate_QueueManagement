@@ -284,8 +284,7 @@ var cron = require('node-cron');
       }else{
         dur = r[0].dur;
 
-        pool.query('INSERT INTO dailyBranchStatistics(tokenId, departmentId, waitingTime) VALUES(? ,?, ?)',[tkId, dept, dur], (err,r,f)=>{
-
+        pool.query('INSERT INTO dailyBranchStatistics(tokenId, departmentId, waitingTime) VALUES(? ,?, TIME_TO_SEC(?))',[tkId, dept, dur], (err,r,f)=>{
 
           if(err){
             console.log(err);
@@ -298,7 +297,7 @@ var cron = require('node-cron');
 
 
   }
-  app.post('/calc',(req,res)=>{
+  app.post('/calculateWeeklyStats',(req,res)=>{
     console.log("calc called");
     evaluateWeekly();
     res.send("done");
@@ -307,15 +306,22 @@ var cron = require('node-cron');
   function evaluateWeekly(){
     console.log("evlaueate weekly called");
 
-    pool.query('select departmentId, avg(TIMESTAMPDIFF(MINUTES, 0, waitingTime)) as av,min(waitingTime) as mn, max(waitingTime) as mx from dailyBranchStatistics group by(departmentId)',(err,r,f)=>{
+    pool.query('select departmentId, avg(waitingTime) as av,min(waitingTime) as mn, max(waitingTime) as mx from dailyBranchStatistics group by(departmentId)',(err,r,f)=>{
       if(err){
         console.log(err);
       }else{
-        console.log(r);
+        pool.query('insert into weeklyBranchStatistics(departmentId, averageWaitingTime, minimumWaitingTime, maximumWaitingTime) values(?, ?, ?, ?)',[r[0].departmentId, r[0].av, r[0].mn, r[0].mx], (err,r,f)=>{
+          if(err){
+            senderror(res);
+          }else{
+            console.log("weekly operation succesfull");
+          }
+        })
       }
     })
   }
 
+  //kindly send tokenId in post request to get the appropriate result
   app.post('/checkTurn',(req,res)=>{
       pool.query('select * from presentStatus where tokenId like ?', req.body.tokenId, (err,r,f)=>{
         if(err){
