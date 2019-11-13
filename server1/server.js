@@ -285,6 +285,8 @@ var cron = require('node-cron');
         dur = r[0].dur;
 
         pool.query('INSERT INTO dailyBranchStatistics(tokenId, departmentId, waitingTime) VALUES(? ,?, ?)',[tkId, dept, dur], (err,r,f)=>{
+
+
           if(err){
             console.log(err);
           }else{
@@ -295,4 +297,21 @@ var cron = require('node-cron');
     })
 
 
+  }
+  app.post('/calc',(req,res)=>{
+    console.log("calc called");
+    evaluateWeekly();
+    res.send("done");
+  })
+  //function to get weekly statistics
+  function evaluateWeekly(){
+    console.log("evlaueate weekly called");
+
+    pool.query('select departmentId, avg(TIMESTAMPDIFF(MINUTES, 0, waitingTime)) as av,min(waitingTime) as mn, max(waitingTime) as mx from dailyBranchStatistics group by(departmentId)',(err,r,f)=>{
+      if(err){
+        console.log(err);
+      }else{
+        console.log(r);
+      }
+    })
   }
