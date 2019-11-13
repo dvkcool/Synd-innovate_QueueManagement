@@ -315,3 +315,22 @@ var cron = require('node-cron');
       }
     })
   }
+
+  app.post('/checkTurn',(req,res)=>{
+      pool.query('select * from presentStatus where tokenId like ?', req.body.tokenId, (err,r,f)=>{
+        if(err){
+          console.log(err);
+          senderror(res);
+        }else{
+          var c = -1;
+          if(r.length > 0){
+            c = r[0].counter;
+          }
+          result = {
+            counter: c
+          }
+          result = JSON.stringify(result)
+          res.send(result);
+        }
+      })
+  })
