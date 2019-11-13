@@ -297,6 +297,8 @@ var cron = require('node-cron');
 
 
   }
+
+  //calculating weekly statistics
   app.post('/calculateWeeklyStats',(req,res)=>{
     console.log("calc called");
     evaluateWeekly();
@@ -340,3 +342,24 @@ var cron = require('node-cron');
         }
       })
   })
+
+ //sending branch statistics to center, kindly send branchId
+ app.post('/calculateCentralStats',(req,res)=>{
+   var bId = req.body.branchId;
+   pool.query('select departmentId, avg(averageWaitingTime) as av,min(minimumWaitingTime) as mn, max(maximumWaitingTime) as mx from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+     if(err){
+       console.log(err);
+       senderror(res);
+     }else{
+       pool.query('insert into centralStatistics(branchId, departmentId, avgWaitingTime, minimumWaitingTime, maximumWaitingTime) values(?,?,?,?,?)',[bId, r[0].departmentId, r[0].av, r[0].mn, r[0].mx],(err,r,f)=>{
+         if(err){
+           console.log(err);
+           senderror(res);
+         }else{
+           console.log("calculation of central statistics done");
+         }
+       })
+     }
+   })
+
+ })
