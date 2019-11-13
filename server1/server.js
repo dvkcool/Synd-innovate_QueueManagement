@@ -90,7 +90,6 @@ var cron = require('node-cron');
 
 
   // Getting first and second for Token
-
   var first = "A".charCodeAt(0);
   var second = 0;
   try {
@@ -197,7 +196,7 @@ var cron = require('node-cron');
   // Cancel a token
   app.post('/cancelTicket', (req, res)=>{
     try {
-      pool.query('delete from ?? where ticketId like  ?', [req.body.dept, req.body.token], (err, r, f)=>{
+      pool.query('delete from ?? where ticketId like  ?', [req.body.dept, req.body.token], (err, result, fields)=>{
         if(err){
           console.log(err);
           senderror(res);
@@ -211,12 +210,25 @@ var cron = require('node-cron');
     }
   });
 
+  // Get next token for a counter
+  app.post('/getNext', (req, res)=>{
+    try {
+      pool.query('select departmentId from counterDept where counterId =  ?', [req.body.counterId], (err, r, f)=>{
+        if(err){
+          console.log(err);
+          senderror(res);
+        }
+        else{
+          var t = result[0].departmentId;
+          // get the next token from this departmentId:
 
-  // Starting the server on 8083 port
-  app.listen(branch.port, function () {
-    console.log('App listening on port ' + branch.port +'!');
+        }
+      })
+    }
+    catch (e) {
+      console.log(e);
+    }
   });
-
   //Endpoint to get a new customer to a counter
   app.post('/nextCustomer',(req,res)=>{
     try{
@@ -246,7 +258,11 @@ var cron = require('node-cron');
                 }
                 console.log(r);
                 if(r.length <= 0){
-                  res.send("no customers in queue");
+                  var m = {
+                    tok: 'No customers in queue'
+                  };
+                  m = JSON.stringify(m);
+                  res.send(m);
                 }else{
                   var custtk = r[0].tokenId;
                   var arrTime = r[0].arrivalTime;
@@ -259,7 +275,11 @@ var cron = require('node-cron');
                       console.log(err);
                       senderror(err);
                     }else{
-                      res.send(custtk);
+                      var m = {
+                        tok: custtk
+                      };
+                      m = JSON.stringify(m);
+                      res.send(m);
                     }
                   })
                 }
@@ -273,6 +293,7 @@ var cron = require('node-cron');
     }
   });
 
+<<<<<<< HEAD
   //function to get daily statistics from customers
   function addCustomer(dept, tkId, arrTime){
 
@@ -363,3 +384,9 @@ var cron = require('node-cron');
    })
 
  })
+=======
+  // Starting the server on 8083 port
+  app.listen(branch.port, function () {
+    console.log('App listening on port ' + branch.port +'!');
+  });
+>>>>>>> 06df74a03d2b0dab61af514a00e488b3580fae35

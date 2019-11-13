@@ -10,7 +10,7 @@
         var url = "http://localhost:"+ branch.port+"/ipaddr";
         console.log(url);
         fetch(url, {
-            method : "GET",
+            method : "POST",
         })
         .then(val =>{return val.json()})
         .then(val => {
