@@ -293,7 +293,7 @@ var cron = require('node-cron');
     }
   });
 
-<<<<<<< HEAD
+
   //function to get daily statistics from customers
   function addCustomer(dept, tkId, arrTime){
 
@@ -384,9 +384,38 @@ var cron = require('node-cron');
    })
 
  })
-=======
+
+ //sending all daily info(departmentId, avgWaitingTime) to frontend
+ app.post('/getDailyInfo',(req,res)=>{
+   pool.query('select avg(waitingTime) as av, departmentId from dailyBranchStatistics group by departmentId',(err,r,f)=>{
+     if(err){
+       console.log(err);
+       senderror(err);
+     }else{
+       var br = [];
+       var avgWt = [];
+       r.forEach((row)=>{
+         br.push(row.departmentId);
+         avgWt.push(row.av);
+       })
+       console.log(br);
+       console.log(avgWt);
+       var dataPoints = [];
+       for(var i=0; i < br.length; i++){
+         var obj = {
+           x: br[i],
+           y: avgWt[i]
+         }
+         dataPoints.push(obj);
+       }
+       console.log(dataPoints);
+       dataPoints = dataPoints.toString();
+       res.send(dataPoints);
+     }
+   })
+ })
+
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
     console.log('App listening on port ' + branch.port +'!');
   });
->>>>>>> 06df74a03d2b0dab61af514a00e488b3580fae35
