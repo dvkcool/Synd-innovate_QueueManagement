@@ -26,7 +26,9 @@ class HomeScreen extends React.Component {
       seconds_Counter: '00',
       startDisable: false,
       fraction: [100],
-      starCount: 3.5
+      starCountClean: 3.5,
+      starCountAmb: 3.5,
+      starCountServ: 3.5
     }
   }
   perform = async ()=>{
@@ -39,6 +41,7 @@ class HomeScreen extends React.Component {
     this.setState({
       token: token,
       service: service,
+      url: url,
       timer: null,
       minutes_set: wait_time,
       seconds_set: 0,
@@ -54,14 +57,12 @@ class HomeScreen extends React.Component {
   }
   componentWillUnmount() {
     clearInterval(this.state.timer);
+    clearInterval(this.state.rtimer);
   }
   onButtonStart = () => {
-
     let timer = setInterval(() => {
-
       var num = (Number(this.state.seconds_Counter) - 1).toString(),
         count = this.state.minutes_Counter;
-
       if (Number(this.state.seconds_Counter) == 0) {
         count = (Number(this.state.minutes_Counter) - 1).toString();
         num = '59';
@@ -79,19 +80,34 @@ class HomeScreen extends React.Component {
         fraction: [f]
       });
     }, 1000);
+    let rtimer = setInterval(() => {
+      this.checkTurn();
+    }, 20000);
+    this.setState({rtimer});
     this.setState({ timer });
 
     this.setState({startDisable : true})
   }
 
-   onStarRatingPress(rating) {
+   onStarRatingPressClean(rating) {
      this.setState({
-       starCount: rating
+       starCountClean: rating
+     });
+   }
+   onStarRatingPressAmb(rating) {
+     this.setState({
+       starCountAmb: rating
+     });
+   }
+   onStarRatingPressServ(rating) {
+     this.setState({
+       starCountServ: rating
      });
    }
   onButtonStop = () => {
     clearInterval(this.state.timer);
-    this.setState({startDisable : false})
+    clearInterval(this.state.rtimer);
+    this.setState({startDisable : false});
   }
   onButtonClear = () => {
     this.setState({
@@ -132,8 +148,8 @@ class HomeScreen extends React.Component {
           halfStar={'ios-star-half'}
           iconSet={'Ionicons'}
           maxStars={5}
-          rating={this.state.starCount}
-          selectedStar={(rating) => this.onStarRatingPress(rating)}
+          rating={this.state.starCountClean}
+          selectedStar={(rating) => this.onStarRatingPressClean(rating)}
           fullStarColor={'#ff9933'}
           />
           <Text> Ambience: </Text><StarRating
@@ -143,8 +159,8 @@ class HomeScreen extends React.Component {
           halfStar={'ios-star-half'}
           iconSet={'Ionicons'}
           maxStars={5}
-          rating={this.state.starCount}
-          selectedStar={(rating) => this.onStarRatingPress(rating)}
+          rating={this.state.starCountAmb}
+          selectedStar={(rating) => this.onStarRatingPressAmb(rating)}
           fullStarColor={'#ff9933'}
           />
           <Text> Service Quality: </Text><StarRating
@@ -154,8 +170,8 @@ class HomeScreen extends React.Component {
           halfStar={'ios-star-half'}
           iconSet={'Ionicons'}
           maxStars={5}
-          rating={this.state.starCount}
-          selectedStar={(rating) => this.onStarRatingPress(rating)}
+          rating={this.state.starCountServ}
+          selectedStar={(rating) => this.onStarRatingPressServ(rating)}
           fullStarColor={'#ff9933'}
           />
         </View>
@@ -177,7 +193,36 @@ class HomeScreen extends React.Component {
   _showMoreApp = () => {
     this.props.navigation.navigate('Other');
   };
+  checkTurn = async() =>{
+    var url = this.state.url;
+    var token = await AsyncStorage.getItem('token');
+    var dept = await AsyncStorage.getItem('dept');
+    url = url +'/checkTurn';
+    console.log(url);
+    fetch(url, {
+      method: 'POST',
+      headers: {
+          'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        tokenId: token,
+        dept: dept
+      })
+    }).then((res) => res.json())
+    .then((res) => {
+      if(res.counter != -1){
+        Alert.alert("Thank you your response has been recorded.Please visit counter: "+ res.counter);
+        AsyncStorage.clear();
+        this.props.navigation.navigate('QRegister');
+      }
+      console.log(res);
+    })
+    .catch((error) => {
+      Alert.alert("Please contact the help desk.")
+      console.error(error);
+    });
 
+  }
   cancelConfirm = async () =>{
     var url = await AsyncStorage.getItem('url');
     var token = await AsyncStorage.getItem('token');

@@ -73,7 +73,7 @@ var cron = require('node-cron');
   // Initialize token everyday to zero
   cron.schedule('* 10 8 * 1-5', () => {
     updateTok('A', 0);
-    updatePresentStatus()
+    updatePresentStatus();
   });
 
 
@@ -153,6 +153,9 @@ var cron = require('node-cron');
                   var te = rw[0].people;
                   var e = te*3/c;
                   e.toFixed(0);
+                  if(e===0){
+                    e = 2;
+                  }
                   pool.query("Insert into ?? values(?, now())", [t, x], (er, row, fiel)=>{
                     if(!er){
                       var m = {
@@ -196,7 +199,7 @@ var cron = require('node-cron');
   // Cancel a token
   app.post('/cancelTicket', (req, res)=>{
     try {
-      pool.query('delete from ?? where ticketId like  ?', [req.body.dept, req.body.token], (err, result, fields)=>{
+      pool.query('delete from ?? where tokenId like  ?', [req.body.dept, req.body.token], (err, result, fields)=>{
         if(err){
           console.log(err);
           senderror(res);
@@ -210,25 +213,6 @@ var cron = require('node-cron');
     }
   });
 
-  // Get next token for a counter
-  app.post('/getNext', (req, res)=>{
-    try {
-      pool.query('select departmentId from counterDept where counterId =  ?', [req.body.counterId], (err, r, f)=>{
-        if(err){
-          console.log(err);
-          senderror(res);
-        }
-        else{
-          var t = result[0].departmentId;
-          // get the next token from this departmentId:
-
-        }
-      })
-    }
-    catch (e) {
-      console.log(e);
-    }
-  });
   //Endpoint to get a new customer to a counter
   app.post('/nextCustomer',(req,res)=>{
     try{
@@ -293,7 +277,6 @@ var cron = require('node-cron');
     }
   });
 
-<<<<<<< HEAD
   //function to get daily statistics from customers
   function addCustomer(dept, tkId, arrTime){
 
@@ -384,9 +367,7 @@ var cron = require('node-cron');
    })
 
  })
-=======
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
     console.log('App listening on port ' + branch.port +'!');
   });
->>>>>>> 06df74a03d2b0dab61af514a00e488b3580fae35
