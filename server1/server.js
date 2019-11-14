@@ -415,6 +415,55 @@ var cron = require('node-cron');
    })
  })
 
+ //sending all weeekly info(departmentId, avgWaitingTime) to frontend
+ app.post('/getWeeklyInfo',(req,res)=>{
+   pool.query('select * from weeklyBranchStatistics',(err,r,f)=>{
+     if(err){
+       console.log(err);
+       senderror(res);
+     }else{
+       console.log('inside else condition');
+       var br = [];
+       var av = [];
+       var mx = [];
+       var mn = [];
+       var rs = [];
+       r.forEach((row)=>{
+         br.push(row.departmentId);
+         av.push(row.averageWaitingTime);
+         mx.push(row.minimumWaitingTime);
+         mn.push(row.maximumWaitingTime);
+       })
+       var dataPoint1 = [];
+       var dataPoint2 = [];
+       var dataPoint3 = [];
+       for(var i=0; i < br.length; i++){
+         var obj1 = {
+           x: br[i],
+           y: av[i]
+         }
+         var obj2 = {
+           x: br[i],
+           y: mx[i]
+         }
+         var obj3 = {
+           x: br[i],
+           y: mn[i]
+         }
+
+         dataPoint1.push(obj1);
+         dataPoint2.push(obj2);
+         dataPoint3.push(obj3);
+       }
+       rs.push(dataPoint1);
+       rs.push(dataPoint2);
+       rs.push(dataPoint3);
+       console.log(rs);
+       res.send(rs);
+     }
+   })
+ })
+
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
     console.log('App listening on port ' + branch.port +'!');
