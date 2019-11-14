@@ -4,7 +4,7 @@
     <script type="text/javascript" src="../branch.json"></script>
     <script type="text/javascript">
       console.log(branch.branch_name);
-      var counterId = 1;
+      var counterId = 3;
       function getNext(){
         /*
         get next Person fetch
@@ -16,7 +16,7 @@
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-              counter: 1
+              counter: 3
             })
         })
         .then(val =>{return val.json()})
