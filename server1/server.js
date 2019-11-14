@@ -367,21 +367,99 @@ var cron = require('node-cron');
  //sending branch statistics to center, kindly send branchId
  app.post('/calculateCentralStats',(req,res)=>{
    var bId = req.body.branchId;
-   pool.query('select departmentId, avg(averageWaitingTime) as av,min(minimumWaitingTime) as mn, max(maximumWaitingTime) as mx from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+   var bg;
+   var sm;
+   var bgb;
+   var smb;
+   pool.query('select * from weeklyBranchStatistics where (departmentId,minimumWaitingTime) IN (select departmentId,min(minimumWaitingTime) from weeklyBranchStatistics group by departmentId)',(err,r,f)=>{
      if(err){
        console.log(err);
-       senderror(res);
      }else{
-       pool.query('insert into centralStatistics(branchId, departmentId, avgWaitingTime, minimumWaitingTime, maximumWaitingTime) values(?,?,?,?,?)',[bId, r[0].departmentId, r[0].av, r[0].mn, r[0].mx],(err,r,f)=>{
+       sm = r[0].minimumWaitingTime;
+       smb = r[0].departmentId;
+
+       pool.query('select * from weeklyBranchStatistics where (departmentId,maximumWaitingTime) IN (select departmentId,max(maximumWaitingTime) from weeklyBranchStatistics group by departmentId)',(err,ro,fe)=>{
          if(err){
            console.log(err);
-           senderror(res);
          }else{
-           console.log("calculation of central statistics done");
+           bg = ro[0].maximumWaitingTime;
+           bgb = ro[0].departmentId;
+
+           pool.query('insert into centralStatistics(branchId, minimumWaitingTime, maximumWaitingTime, minWtDept, maxWtDept) values(?,?,?,?,?)',[bId, sm, bg, smb, bgb],(err,row,fie)=>{
+             if(err){
+               console.log(err);
+               senderror(res);
+             }else{
+                res.send("done");
+             }
+           })
+
+
          }
        })
+
      }
    })
+
+
+
+
+
+
+
+   // var bg;
+   // var sm;
+   // pool.query('select min(minimumWaitingTime) as mn from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+   //   if(err){
+   //     console.log(err);
+   //     senderror(res);
+   //   }else{
+   //     sm = r[0].mn;
+   //     console.log("sm",sm);
+   //   }
+   // })
+   //
+   // pool.query('select max(maximumWaitingTime) as mx from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+   //   if(err){
+   //     console.log(err);
+   //     senderror(res);
+   //   }else{
+   //     bg = r[0].mx;
+   //     console.log("bg",bg);
+   //   }
+   // })
+      // bg = parseInt(bg);
+      // sm = parseInt(sm);
+      //  var bgb;
+      //  var smb;
+      //  pool.query('select departmentId from weeklyBranchStatistics where minimumWaitingTime = ?',sm,(err,r,f)=>{
+      //    if(err){
+      //      console.log(err);
+      //      senderror(res);
+      //    }else{
+      //      smb = r[0].departmentId;
+      //    }
+      //  })
+      //
+      //  pool.query('select departmentId from weeklyBranchStatistics where maximumWaitingTime = ?',bg,(err,r,f)=>{
+      //    if(err){
+      //      console.log(err);
+      //      senderror(res);
+      //    }else{
+      //      bgb = r[0].departmentId;
+      //    }
+      //  })
+      //
+      //  console.log("smb ", smb);
+      //  console.log("bgb ", bgb);
+      //  pool.query('insert into centralStatistics(branchId,minimumWaitingTime, maximumWaitingTime, minWtDept, maxWtDept) values(?,?,?,?,?)',[bId, sm, bg, smb,bgb],(err,r,f)=>{
+      //    if(err){
+      //      console.log(err);
+      //      senderror(res);
+      //    }else{
+      //      console.log("calculation of central statistics done");
+      //    }
+      //  })
 
  })
 
@@ -463,6 +541,9 @@ var cron = require('node-cron');
      }
    })
  })
+
+
+
 
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
