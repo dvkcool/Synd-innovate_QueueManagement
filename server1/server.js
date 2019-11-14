@@ -73,7 +73,20 @@ var cron = require('node-cron');
   // Initialize token everyday to zero
   cron.schedule('* 10 8 * 1-5', () => {
     updateTok('A', 0);
+    updatePresentStatus()
   });
+
+
+  // making all presentStatus tokenId to null
+ function updatePresentStatus(){
+      pool.query('update presentStatus set tokenId = ?',[null],(err,r,f)=>{
+        if(err){
+          console.log(err);
+        }
+      })
+  }
+
+
 
 
   // Getting first and second for Token
@@ -235,10 +248,11 @@ var cron = require('node-cron');
               var tId = r[0].tokenId;
               if(tId != null){
                 pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[null, req.body.counter, dept], (err,r,f)=>{
+
                   console.log("token deleted");
                 })
               }
-              pool.query('select tokenId from ??',dept, (err,r,f)=>{
+              pool.query('select tokenId,arrivalTime from ??',dept, (err,r,f)=>{
                 if(err){
                   senderror(res);
                 }
@@ -251,6 +265,8 @@ var cron = require('node-cron');
                   res.send(m);
                 }else{
                   var custtk = r[0].tokenId;
+                  var arrTime = r[0].arrivalTime;
+                  addCustomer(dept, custtk, arrTime);
                   pool.query('update presentStatus set tokenId = ? where counter like ? and departmentId like ?',[custtk, req.body.counter, dept], (err,r,f)=>{
                   pool.query('delete from ?? where tokenId = ?', [dept, custtk], (err,r,f)=>{
 
@@ -277,7 +293,100 @@ var cron = require('node-cron');
     }
   });
 
+<<<<<<< HEAD
+  //function to get daily statistics from customers
+  function addCustomer(dept, tkId, arrTime){
+
+    var dur;
+    pool.query('select TIMEDIFF(CURRENT_TIME(),?) as dur',arrTime,(err,r,f)=>{
+
+      if(err){
+        console.log(err);
+      }else{
+        dur = r[0].dur;
+
+        pool.query('INSERT INTO dailyBranchStatistics(tokenId, departmentId, waitingTime) VALUES(? ,?, TIME_TO_SEC(?))',[tkId, dept, dur], (err,r,f)=>{
+
+          if(err){
+            console.log(err);
+          }else{
+            console.log("value set successfully");
+          }
+        })
+      }
+    })
+
+
+  }
+
+  //calculating weekly statistics
+  app.post('/calculateWeeklyStats',(req,res)=>{
+    console.log("calc called");
+    evaluateWeekly();
+    res.send("done");
+  })
+  //function to get weekly statistics
+  function evaluateWeekly(){
+    console.log("evlaueate weekly called");
+
+    pool.query('select departmentId, avg(waitingTime) as av,min(waitingTime) as mn, max(waitingTime) as mx from dailyBranchStatistics group by(departmentId)',(err,r,f)=>{
+      if(err){
+        console.log(err);
+      }else{
+        pool.query('insert into weeklyBranchStatistics(departmentId, averageWaitingTime, minimumWaitingTime, maximumWaitingTime) values(?, ?, ?, ?)',[r[0].departmentId, r[0].av, r[0].mn, r[0].mx], (err,r,f)=>{
+          if(err){
+            senderror(res);
+          }else{
+            console.log("weekly operation succesfull");
+          }
+        })
+      }
+    })
+  }
+
+  //kindly send tokenId in post request to get the appropriate result
+  app.post('/checkTurn',(req,res)=>{
+      pool.query('select * from presentStatus where tokenId like ?', req.body.tokenId, (err,r,f)=>{
+        if(err){
+          console.log(err);
+          senderror(res);
+        }else{
+          var c = -1;
+          if(r.length > 0){
+            c = r[0].counter;
+          }
+          result = {
+            counter: c
+          }
+          result = JSON.stringify(result)
+          res.send(result);
+        }
+      })
+  })
+
+ //sending branch statistics to center, kindly send branchId
+ app.post('/calculateCentralStats',(req,res)=>{
+   var bId = req.body.branchId;
+   pool.query('select departmentId, avg(averageWaitingTime) as av,min(minimumWaitingTime) as mn, max(maximumWaitingTime) as mx from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+     if(err){
+       console.log(err);
+       senderror(res);
+     }else{
+       pool.query('insert into centralStatistics(branchId, departmentId, avgWaitingTime, minimumWaitingTime, maximumWaitingTime) values(?,?,?,?,?)',[bId, r[0].departmentId, r[0].av, r[0].mn, r[0].mx],(err,r,f)=>{
+         if(err){
+           console.log(err);
+           senderror(res);
+         }else{
+           console.log("calculation of central statistics done");
+         }
+       })
+     }
+   })
+
+ })
+=======
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
     console.log('App listening on port ' + branch.port +'!');
   });
+>>>>>>> 06df74a03d2b0dab61af514a00e488b3580fae35
