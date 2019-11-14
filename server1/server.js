@@ -350,22 +350,179 @@ var cron = require('node-cron');
  //sending branch statistics to center, kindly send branchId
  app.post('/calculateCentralStats',(req,res)=>{
    var bId = req.body.branchId;
-   pool.query('select departmentId, avg(averageWaitingTime) as av,min(minimumWaitingTime) as mn, max(maximumWaitingTime) as mx from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+   var bg;
+   var sm;
+   var bgb;
+   var smb;
+   pool.query('select * from weeklyBranchStatistics where (departmentId,minimumWaitingTime) IN (select departmentId,min(minimumWaitingTime) from weeklyBranchStatistics group by departmentId)',(err,r,f)=>{
+     if(err){
+       console.log(err);
+     }else{
+       sm = r[0].minimumWaitingTime;
+       smb = r[0].departmentId;
+
+       pool.query('select * from weeklyBranchStatistics where (departmentId,maximumWaitingTime) IN (select departmentId,max(maximumWaitingTime) from weeklyBranchStatistics group by departmentId)',(err,ro,fe)=>{
+         if(err){
+           console.log(err);
+         }else{
+           bg = ro[0].maximumWaitingTime;
+           bgb = ro[0].departmentId;
+
+           pool.query('insert into centralStatistics(branchId, minimumWaitingTime, maximumWaitingTime, minWtDept, maxWtDept) values(?,?,?,?,?)',[bId, sm, bg, smb, bgb],(err,row,fie)=>{
+             if(err){
+               console.log(err);
+               senderror(res);
+             }else{
+                res.send("done");
+             }
+           })
+
+
+         }
+       })
+
+     }
+   })
+
+
+
+
+
+
+
+   // var bg;
+   // var sm;
+   // pool.query('select min(minimumWaitingTime) as mn from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+   //   if(err){
+   //     console.log(err);
+   //     senderror(res);
+   //   }else{
+   //     sm = r[0].mn;
+   //     console.log("sm",sm);
+   //   }
+   // })
+   //
+   // pool.query('select max(maximumWaitingTime) as mx from weeklyBranchStatistics group by(departmentId)',(err,r,f)=>{
+   //   if(err){
+   //     console.log(err);
+   //     senderror(res);
+   //   }else{
+   //     bg = r[0].mx;
+   //     console.log("bg",bg);
+   //   }
+   // })
+      // bg = parseInt(bg);
+      // sm = parseInt(sm);
+      //  var bgb;
+      //  var smb;
+      //  pool.query('select departmentId from weeklyBranchStatistics where minimumWaitingTime = ?',sm,(err,r,f)=>{
+      //    if(err){
+      //      console.log(err);
+      //      senderror(res);
+      //    }else{
+      //      smb = r[0].departmentId;
+      //    }
+      //  })
+      //
+      //  pool.query('select departmentId from weeklyBranchStatistics where maximumWaitingTime = ?',bg,(err,r,f)=>{
+      //    if(err){
+      //      console.log(err);
+      //      senderror(res);
+      //    }else{
+      //      bgb = r[0].departmentId;
+      //    }
+      //  })
+      //
+      //  console.log("smb ", smb);
+      //  console.log("bgb ", bgb);
+      //  pool.query('insert into centralStatistics(branchId,minimumWaitingTime, maximumWaitingTime, minWtDept, maxWtDept) values(?,?,?,?,?)',[bId, sm, bg, smb,bgb],(err,r,f)=>{
+      //    if(err){
+      //      console.log(err);
+      //      senderror(res);
+      //    }else{
+      //      console.log("calculation of central statistics done");
+      //    }
+      //  })
+
+ })
+
+ //sending all daily info(departmentId, avgWaitingTime) to frontend
+ app.post('/getDailyInfo',(req,res)=>{
+   pool.query('select avg(waitingTime) as av, departmentId from dailyBranchStatistics group by departmentId',(err,r,f)=>{
+     if(err){
+       console.log(err);
+       senderror(err);
+     }else{
+       var br = [];
+       var avgWt = [];
+       r.forEach((row)=>{
+         br.push(row.departmentId);
+         avgWt.push(row.av);
+       })
+       console.log(br);
+       console.log(avgWt);
+       var dataPoints = [];
+       for(var i=0; i < br.length; i++){
+         var obj = {
+           x: br[i],
+           y: avgWt[i]
+         }
+         dataPoints.push(obj);
+       }
+       console.log(dataPoints);
+       dataPoints = dataPoints.toString();
+       res.send(dataPoints);
+     }
+   })
+ })
+
+ //sending all weeekly info(departmentId, avgWaitingTime) to frontend
+ app.post('/getWeeklyInfo',(req,res)=>{
+   pool.query('select * from weeklyBranchStatistics',(err,r,f)=>{
      if(err){
        console.log(err);
        senderror(res);
      }else{
-       pool.query('insert into centralStatistics(branchId, departmentId, avgWaitingTime, minimumWaitingTime, maximumWaitingTime) values(?,?,?,?,?)',[bId, r[0].departmentId, r[0].av, r[0].mn, r[0].mx],(err,r,f)=>{
-         if(err){
-           console.log(err);
-           senderror(res);
-         }else{
-           console.log("calculation of central statistics done");
-         }
+       console.log('inside else condition');
+       var br = [];
+       var av = [];
+       var mx = [];
+       var mn = [];
+       var rs = [];
+       r.forEach((row)=>{
+         br.push(row.departmentId);
+         av.push(row.averageWaitingTime);
+         mx.push(row.minimumWaitingTime);
+         mn.push(row.maximumWaitingTime);
        })
+       var dataPoint1 = [];
+       var dataPoint2 = [];
+       var dataPoint3 = [];
+       for(var i=0; i < br.length; i++){
+         var obj1 = {
+           x: br[i],
+           y: av[i]
+         }
+         var obj2 = {
+           x: br[i],
+           y: mx[i]
+         }
+         var obj3 = {
+           x: br[i],
+           y: mn[i]
+         }
+
+         dataPoint1.push(obj1);
+         dataPoint2.push(obj2);
+         dataPoint3.push(obj3);
+       }
+       rs.push(dataPoint1);
+       rs.push(dataPoint2);
+       rs.push(dataPoint3);
+       console.log(rs);
+       res.send(rs);
      }
    })
-
  })
   // Starting the server on 8083 port
   app.listen(branch.port, function () {
