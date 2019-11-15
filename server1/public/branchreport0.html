@@ -151,15 +151,18 @@ body {
 </head>
 <body>
 
-<div class="sidenav">
-  <hr><br><br>
-  <a href="#weekly">Weekly Report</a>
-  <br><br><hr>
-  <br><br>
-  <a href="#daily">Daily Report</a>
-  <br><br><hr>
-</div>
-
+  <div class="sidenav">
+    <hr><br><br>
+    <a href="#average">Average Report</a>
+    <br><br><hr>
+    <br><br>
+    <a href="#min">Minimum Report</a>
+    <br><br><hr>
+    <br><br>
+    <a href="#Max">Maximum Report</a>
+    <br><br><hr>
+  </div>
+<!--
 <div class="main">
   <img src="banner.png" width="100%"/>
   <h2>Branch Report</h2>
@@ -232,6 +235,130 @@ body {
   </div>
 
 </div>
+-->
 
+<div class="main">
+  <img src="banner.png" width="100%"/>
+  <h2>Central Report</h2>
+  <div class="report" id ="average">
+    <h4> Average Report </h4>
+    <div id="avgreport" style="height: 300px; width: 100%;"></div>
+    <script>
+      anychart.onDocumentReady(function() {
+
+        // set the data
+        var data = {
+            header: ["Depatment", "Waiting Time"],
+            rows: [
+              ["Raipur", 15],
+              ["Bilaspur", 12],
+              ["Korba", 13],
+              ["Madhapur", 10],
+              ["Raigarh", 5.5],
+              ["Kharsia", 7],
+              ["Delhi", 8.5],
+              ["Daksha", 17],
+              ["Rourkela", 25],
+              ["Khajar", 11],
+              ["Lakhanpur", 12],
+              ["Kanpur", 24]
+        ]};
+
+        // create the chart
+        var chart = anychart.column();
+
+        // add the data
+        chart.data(data);
+
+        // set the chart title
+        chart.title("Average Waiting time");
+
+        // draw
+        chart.container("avgreport");
+        chart.draw();
+      });
+    </script>
+  </div>
+  <div class="report" id ="min">
+    <h4> Minimum Report </h4>
+    <div id="minreport" style="height: 300px; width: 100%;"></div>
+    <script>
+      anychart.onDocumentReady(function() {
+
+        // set the data
+        var data = {
+            header: ["Depatment", "Waiting Time"],
+            rows: [
+              ["Raipur", 5],
+              ["Bilaspur", 6],
+              ["Korba", 3],
+              ["Madhapur", 2],
+              ["Raigarh", 5],
+              ["Kharsia", 4],
+              ["Delhi", 5],
+              ["Daksha", 6],
+              ["Rourkela", 5],
+              ["Khajar", 4],
+              ["Lakhanpur", 5],
+              ["Kanpur", 4]
+        ]};
+
+        // create the chart
+        var chart = anychart.column();
+
+        // add the data
+        chart.data(data);
+
+        // set the chart title
+        chart.title("Minimum Waiting time");
+
+        // draw
+        chart.container("minreport");
+        chart.draw();
+      });
+    </script>
+  </div>
+  <br><BR><BR><BR>  <br><BR><BR><BR>
+  <div class="report" id ="max">
+    <h4> Maximum Report </h4>
+    <div id="maxreport" style="height: 300px; width: 100%;"></div>
+    <script>
+      anychart.onDocumentReady(function() {
+
+        // set the data
+        var data = {
+            header: ["Depatment", "Waiting Time"],
+            rows: [
+              ["Raipur", 18],
+              ["Bilaspur", 26],
+              ["Korba", 20],
+              ["Madhapur", 22],
+              ["Raigarh", 25],
+              ["Kharsia", 24],
+              ["Delhi", 25],
+              ["Daksha", 30],
+              ["Rourkela", 40],
+              ["Khajar", 29],
+              ["Lakhanpur", 22],
+              ["Kanpur", 40]
+        ]};
+
+        // create the chart
+        var chart = anychart.column();
+
+        // add the data
+        chart.data(data);
+
+        // set the chart title
+        chart.title("Maximum Waiting time");
+
+        // draw
+        chart.container("maxreport");
+        chart.draw();
+      });
+    </script>
+  </div>
+  <br><BR><BR><BR>  <br><BR><BR><BR>
+</div>
 </body>
 </html>
